@@ -45,7 +45,7 @@ def get_update():
     results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
     s = ""
     for i, r in enumerate(results):
-        s += "%s: %s \n" % (ticker_names[i], r['l_cur'])
+        s += ("%s \t %s \n" % (ticker_names[i], r['l_cur'])).expandtabs(30)
 
     return HTMLParser().unescape(s).encode('utf-8')
 
