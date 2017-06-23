@@ -6,6 +6,15 @@ import thread, logging
 from time import sleep
 
 
+def parse_lines(lines):
+    for l in lines:
+        name, ticker = l.strip().split(",")
+        yield (name, ticker)
+
+# Read files and get symbols
+with open("tickers.txt") as file:
+    tickers = list(parse_lines(file.readlines()))
+
 # Set up color scheme
 palette = [
     ('titlebar', 'dark red,bold', 'black'),
@@ -31,8 +40,14 @@ quote_box = urwid.LineBox(v_padding)
 layout = urwid.Frame(header=header, body=quote_box, footer=menu)
 
 def get_update():
-    joke_json = loads(urlopen('https://www.google.com/finance/info?q=HKG:0968').read()[3:])
-    return HTMLParser().unescape('Xinyi Solar:'+ joke_json[0]['l_cur']).encode('utf-8')
+    ticker_syms = [t[1] for t in tickers]
+    ticker_names = [t[0] for t in tickers]
+    results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
+    s = ""
+    for i, r in enumerate(results):
+        s += "%s: %s \n" % (ticker_names[i], r['l_cur'])
+
+    return HTMLParser().unescape(s).encode('utf-8')
 
 # Handle key presses
 def handle_input(key):
