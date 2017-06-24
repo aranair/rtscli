@@ -45,7 +45,6 @@ quote_box = urwid.LineBox(v_padding)
 layout = urwid.Frame(header=header, body=quote_box, footer=menu)
 tabsize = 25
 
-
 def pos_neg_change(change):
     return ("+{}".format(change) if change >= 0 else str(change))
 
@@ -90,7 +89,7 @@ def refresh(_loop, _data):
     main_loop.set_alarm_in(10, refresh)
 
 main_loop = urwid.MainLoop(layout, palette, unhandled_input=handle_input)
-main_loop.set_alarm_in(0, refresh)
 
-# Kick off the program
-main_loop.run()
+def cli():
+    main_loop.set_alarm_in(0, refresh)
+    main_loop.run()
