@@ -17,10 +17,14 @@ with open("tickers.txt") as file:
 
 # Set up color scheme
 palette = [
-    ('titlebar', 'dark red,bold', 'black'),
-    ('refresh button', 'dark green,bold', 'black'),
-    ('quit button', 'dark red,bold', 'black'),
-    ('getting quote', 'dark blue', 'black')]
+        ('titlebar', 'dark red,bold', ''),
+        ('refresh button', 'dark green,bold', ''),
+        ('quit button', 'dark red,bold', ''),
+        ('getting quote', 'dark blue', ''),
+        ('headers', 'white,bold', ''),
+        ('change positive', 'dark green', ''),
+        ('change negative', 'dark red', ''),
+        ]
 
 header_text = urwid.Text(u'Stock Quotes')
 header = urwid.AttrMap(header_text, 'titlebar')
@@ -28,7 +32,8 @@ header = urwid.AttrMap(header_text, 'titlebar')
 # Create the menu
 menu = urwid.Text([
     u'Press (', ('refresh button', u'R'), u') to manually refresh. ',
-    u'Press (', ('quit button', u'Q'), u') to quit.'])
+    u'Press (', ('quit button', u'Q'), u') to quit.'
+    ])
 
 # Create the quotes box
 quote_text = urwid.Text(u'Press (R) to get your first quote!')
@@ -38,16 +43,29 @@ quote_box = urwid.LineBox(v_padding)
 
 # Assemble the widgets
 layout = urwid.Frame(header=header, body=quote_box, footer=menu)
+tabsize = 25
 
 def get_update():
     ticker_syms = [t[1] for t in tickers]
     ticker_names = [t[0] for t in tickers]
     results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
-    s = ""
-    for i, r in enumerate(results):
-        s += ("%s \t %s \n" % (ticker_names[i], r['l_cur'])).expandtabs(30)
 
-    return HTMLParser().unescape(s).encode('utf-8')
+    l = [ ('headers', u'Stock \t Last Price \t Change '.expandtabs(tabsize)),
+          ('headers', u'\t % Change \n'.expandtabs(3))
+        ]
+    for i, r in enumerate(results):
+        change = float(r['c'])
+        percent_change = float(r['cp'])
+        color = 'change positive' if change >= 0 else 'change negative'
+        l.append((
+            u'{} \t {} \t '.format(
+                ticker_names[i],
+                r['l_cur'])
+            ).expandtabs(tabsize))
+        l.append( (color, (u'{} \t {}% \n'.format(change, percent_change)).expandtabs(10)) )
+
+    return l
+    # return HTMLParser().unescape(s).encode('utf-8')
 
 # Handle key presses
 def handle_input(key):
@@ -57,7 +75,6 @@ def handle_input(key):
         raise urwid.ExitMainLoop()
 
 def refresh(_loop, _data):
-    quote_box.base_widget.set_text(('getting quote', 'Getting new quote ...'))
     main_loop.draw_screen()
     quote_box.base_widget.set_text(get_update())
     main_loop.set_alarm_in(10, refresh)
