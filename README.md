@@ -8,6 +8,7 @@ Corgi - Terminal Stock Ticker
 
 ## Screenshot
 
+![Corgi Demo](https://github.com/aranair/corgi/corgi-demo.png "Demo")
 
 ## Dependencies
 
