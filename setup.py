@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(
-    name='corgi',
-    version='0.1',
-    description='Stock Ticker',
-    url='http://github.com/aranair/corgi',
+    name='rtscli',
+    version='0.3',
+    description='A realtime stocks ticker that runs in CLI',
+    url='http://github.com/aranair/rtscli',
     author='Boa Ho Man',
     author_email='boa.homan@gmail.com',
     license='MIT',
@@ -14,6 +14,6 @@ setup(
         'simplejson',
         ],
     zip_safe=False,
-    py_modules=['corgi'],
-    entry_points={ 'console_scripts': ['corgi=corgi:cli'] },
+    py_modules=['rtscli'],
+    entry_points={ 'console_scripts': ['rtscli=rtscli:cli'] },
 )

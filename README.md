@@ -1,5 +1,5 @@
-Corgi - Terminal Stock Ticker
-=============================
+rtscli - Realtime Stock Ticker CLI
+===================================
 
 ## What is this?
 
@@ -8,7 +8,7 @@ Corgi - Terminal Stock Ticker
 
 ## Screenshot
 
-![Corgi Demo](https://github.com/aranair/corgi/blob/master/corgi-demo.png?raw=true "Demo")
+![Demo](https://github.com/aranair/corgi/blob/master/rtscli.png?raw=true "Demo")
 
 ## Dependencies
 
@@ -22,9 +22,9 @@ all that stuff with python and pip can be skipped.
 ## How to use it?
 
 ```
-$ git clone git@github.com:aranair/corgi.git
+$ git clone git@github.com:aranair/rtscli.git
 $ pip install -e .
-$ corgi
+$ rtscli
 ```
 
 If you'll like to change the stocks, simply update `tickers.txt`
