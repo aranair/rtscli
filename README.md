@@ -19,15 +19,36 @@ all that stuff with python and pip can be skipped.
 - pip
 - Bunch of other python packages
 
-## How to use it?
+## Install via Pip
+
+```
+pip install rtscli
+```
+
+## Running it
+
+- Add tickers.txt in the format below
+- run `rtscli`
+
+## Sample Tickers File
+
+```
+Xinyi Solar,HKG:0968
+China Resources Power,HKG:0836
+Bank of China,HKG:3988
+Sitoy,HKG:1023
+iShares India,HKG:2836
+Evergrande,HKG:3333
+Ping An,HKG:2318
+```
+
+## Downloading manually
 
 ```
 $ git clone git@github.com:aranair/rtscli.git
 $ pip install -e .
 $ rtscli
 ```
-
-If you'll like to change the stocks, simply update `tickers.txt`
 
 ## License
 
