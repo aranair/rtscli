@@ -17,12 +17,12 @@ with open("tickers.txt") as file:
 
 # Set up color scheme
 palette = [
-        ('titlebar', 'dark red,bold', ''),
+        ('titlebar', 'dark red', ''),
         ('refresh button', 'dark green,bold', ''),
-        ('quit button', 'dark red,bold', ''),
+        ('quit button', 'dark red', ''),
         ('getting quote', 'dark blue', ''),
         ('headers', 'white,bold', ''),
-        ('change positive', 'dark green', ''),
+        ('change ', 'dark green', ''),
         ('change negative', 'dark red', ''),
         ]
 
@@ -45,18 +45,28 @@ quote_box = urwid.LineBox(v_padding)
 layout = urwid.Frame(header=header, body=quote_box, footer=menu)
 tabsize = 25
 
+
+def pos_neg_change(change):
+    return ("+{}".format(change) if change >= 0 else str(change))
+
 def get_update():
     ticker_syms = [t[1] for t in tickers]
     ticker_names = [t[0] for t in tickers]
     results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
 
     l = [ ('headers', u'Stock \t Last Price \t Change '.expandtabs(tabsize)),
-          ('headers', u'\t % Change \n'.expandtabs(3))
-        ]
+          ('headers', u'\t % Change \n'.expandtabs(3)) ]
+
     for i, r in enumerate(results):
         change = float(r['c'])
         percent_change = float(r['cp'])
-        color = 'change positive' if change >= 0 else 'change negative'
+        color = 'change '
+        if change < 0:
+            color += 'negative'
+
+        change = pos_neg_change(change)
+        percent_change = pos_neg_change(percent_change)
+
         l.append((
             u'{} \t {} \t '.format(
                 ticker_names[i],
