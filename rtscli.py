@@ -8,8 +8,8 @@ from time import sleep
 
 def parse_lines(lines):
     for l in lines:
-        name, ticker = l.strip().split(",")
-        yield (name, ticker)
+        ticker = l.strip().split(",")
+        yield ticker
 
 # Read files and get symbols
 with open("tickers.txt") as file:
@@ -50,11 +50,12 @@ def pos_neg_change(change):
 
 def get_update():
     ticker_syms = [t[1] for t in tickers]
-    ticker_names = [t[0] for t in tickers]
     results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
 
     l = [ ('headers', u'Stock \t Last Price \t Change '.expandtabs(tabsize)),
-          ('headers', u'\t % Change \n'.expandtabs(3)) ]
+          ('headers', u'\t % Change '.expandtabs(3)),
+          ('headers', u'\t Gain '.expandtabs(3)),
+          ('headers', u'\t % Gain \n'.expandtabs(5)), ]
 
     for i, r in enumerate(results):
         change = float(r['c'])
@@ -68,10 +69,27 @@ def get_update():
 
         l.append((
             u'{} \t {} \t '.format(
-                ticker_names[i],
+                tickers[i][0],
                 r['l_cur'])
             ).expandtabs(tabsize))
-        l.append( (color, (u'{} \t {}% \n'.format(change, percent_change)).expandtabs(10)) )
+
+        l.append((
+            color,
+            (u'{} \t {}% \t'.format(change, percent_change)).expandtabs(12)
+            ))
+
+        gain = gain_percent = ''
+
+        if len(tickers[i]) > 2:
+            price_in = float(tickers[i][2])
+            gain = float(r['l_fix']) - price_in
+            gain_percent = round(gain / price_in * 100, 3)
+
+        l.append((
+            color,
+            (u'{} \t {}% \n'.format(pos_neg_change(gain), pos_neg_change(gain_percent))).expandtabs(10)
+            ))
+
 
     return l
     # return HTMLParser().unescape(s).encode('utf-8')
