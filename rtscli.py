@@ -48,6 +48,13 @@ tabsize = 25
 def pos_neg_change(change):
     return ("+{}".format(change) if change >= 0 else str(change))
 
+def get_color(change):
+    color = 'change '
+    if change < 0:
+        color += 'negative'
+
+    return color
+
 def get_update():
     ticker_syms = [t[1] for t in tickers]
     results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
@@ -60,10 +67,6 @@ def get_update():
     for i, r in enumerate(results):
         change = float(r['c'])
         percent_change = float(r['cp'])
-        color = 'change '
-        if change < 0:
-            color += 'negative'
-
         change = pos_neg_change(change)
         percent_change = pos_neg_change(percent_change)
 
@@ -74,7 +77,7 @@ def get_update():
             ).expandtabs(tabsize))
 
         l.append((
-            color,
+            get_color(change),
             (u'{} \t {}% \t'.format(change, percent_change)).expandtabs(12)
             ))
 
@@ -86,7 +89,7 @@ def get_update():
             gain *= float(tickers[i][3])
 
         l.append((
-            color,
+            get_color(gain),
             (u'{} \t {}% \n'.format(pos_neg_change(gain), pos_neg_change(gain_percent))).expandtabs(10)
             ))
 
