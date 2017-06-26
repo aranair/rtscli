@@ -79,11 +79,11 @@ def get_update():
             ))
 
         gain = gain_percent = ''
-
         if len(tickers[i]) > 2:
             price_in = float(tickers[i][2])
-            gain = float(r['l_fix']) - price_in
+            gain = (float(r['l_fix']) - price_in)
             gain_percent = round(gain / price_in * 100, 3)
+            gain *= float(tickers[i][3])
 
         l.append((
             color,
