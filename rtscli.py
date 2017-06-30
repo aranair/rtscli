@@ -17,23 +17,22 @@ with open("tickers.txt") as file:
 
 # Set up color scheme
 palette = [
-        ('titlebar', 'dark red', ''),
-        ('refresh button', 'dark green,bold', ''),
-        ('quit button', 'dark red', ''),
-        ('getting quote', 'dark blue', ''),
-        ('headers', 'white,bold', ''),
-        ('change ', 'dark green', ''),
-        ('change negative', 'dark red', ''),
-        ]
+    ('titlebar', 'dark red', ''),
+    ('refresh button', 'dark green,bold', ''),
+    ('quit button', 'dark red', ''),
+    ('getting quote', 'dark blue', ''),
+    ('headers', 'white,bold', ''),
+    ('change ', 'dark green', ''),
+    ('change negative', 'dark red', '')]
 
-header_text = urwid.Text(u'Stock Quotes')
+header_text = urwid.Text(u' Stock Quotes')
 header = urwid.AttrMap(header_text, 'titlebar')
 
 # Create the menu
 menu = urwid.Text([
     u'Press (', ('refresh button', u'R'), u') to manually refresh. ',
     u'Press (', ('quit button', u'Q'), u') to quit.'
-    ])
+])
 
 # Create the quotes box
 quote_text = urwid.Text(u'Press (R) to get your first quote!')
@@ -43,64 +42,79 @@ quote_box = urwid.LineBox(v_padding)
 
 # Assemble the widgets
 layout = urwid.Frame(header=header, body=quote_box, footer=menu)
-tabsize = 25
 
 def pos_neg_change(change):
-    return ("+{}".format(change) if change >= 0 else str(change))
+    if not change:
+        return "0"
+    else:
+        return ("+{}".format(change) if change >= 0 else str(change))
 
 def get_color(change):
     color = 'change '
     if change < 0:
         color += 'negative'
-
     return color
+
+def append_text(l, s, tabsize=10, color='white'):
+    l.append((color, s.expandtabs(tabsize)))
+
+def calculate_gain(price_in, current_price, shares):
+    gain_per_share = float(current_price) - float(price_in)
+    gain_percent = round(gain_per_share / float(price_in) * 100, 3)
+
+    return gain_per_share * int(shares), gain_percent
 
 def get_update():
     ticker_syms = [t[1] for t in tickers]
     results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
 
-    l = [ ('headers', u'Stock \t Last Price \t Change '.expandtabs(tabsize)),
-          ('headers', u'\t % Change '.expandtabs(3)),
-          ('headers', u'\t Gain '.expandtabs(3)),
-          ('headers', u'\t % Gain \n'.expandtabs(5)), ]
+    updates = [
+        ('headers', u'Stock \t '.expandtabs(25)),
+        ('headers', u'Last Price \t Change '.expandtabs(5)),
+        ('headers', u'\t % Change '.expandtabs(5)),
+        ('headers', u'\t Gain '.expandtabs(3)),
+        ('headers', u'\t % Gain \n'.expandtabs(5)) ]
+
+    total_portfolio_change = 0.0
 
     for i, r in enumerate(results):
         change = float(r['c'])
         percent_change = float(r['cp'])
-        change = pos_neg_change(change)
-        percent_change = pos_neg_change(percent_change)
 
-        l.append((
-            u'{} \t {} \t '.format(
-                tickers[i][0],
-                r['l_cur'])
-            ).expandtabs(tabsize))
-
-        l.append((
-            get_color(change),
-            (u'{} \t {}% \t'.format(change, percent_change)).expandtabs(12)
-            ))
+        append_text(updates, '{} \t '.format(tickers[i][0]), tabsize=25)
+        append_text(updates, '{} \t '.format(r['l_cur']), tabsize=15)
+        append_text(
+            updates,
+            '{} \t {}% \t'.format(
+                pos_neg_change(change),
+                pos_neg_change(percent_change)),
+            tabsize=13,
+            color=get_color(change))
 
         gain = gain_percent = ''
         if len(tickers[i]) > 2:
-            price_in = float(tickers[i][2])
-            gain = (float(r['l_fix']) - price_in)
-            gain_percent = round(gain / price_in * 100, 3)
-            gain *= float(tickers[i][3])
+            gain, gain_percent = calculate_gain(
+                price_in = tickers[i][2],
+                current_price = r['l_fix'],
+                shares = tickers[i][3])
 
-        l.append((
-            get_color(gain),
-            (u'{} \t {}% \n'.format(pos_neg_change(gain), pos_neg_change(gain_percent))).expandtabs(10)
-            ))
+            total_portfolio_change += gain
 
+        append_text(
+            updates,
+            '{} \t {}% \n'.format(pos_neg_change(gain), pos_neg_change(gain_percent)),
+            color=get_color(gain))
 
-    return l
-    # return HTMLParser().unescape(s).encode('utf-8')
+    append_text(updates, '\n\n\nNet Portfolio Gain: ')
+    append_text(updates, pos_neg_change(total_portfolio_change), color=get_color(total_portfolio_change))
+
+    return updates
 
 # Handle key presses
 def handle_input(key):
     if key == 'R' or key == 'r':
         refresh(main_loop, '')
+
     if key == 'Q' or key == 'q':
         raise urwid.ExitMainLoop()
 
