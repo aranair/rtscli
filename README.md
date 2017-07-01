@@ -32,17 +32,19 @@ pip install rtscli
 
 ## Sample Tickers File
 
+Format: Name, Ticker(Google format), cost price, shares held
+
 ```
-Xinyi Solar,HKG:0968
-China Resources Power,HKG:0836
-Bank of China,HKG:3988
-Sitoy,HKG:1023
+Xinyi Solar,HKG:0968,2.368,12345
+China Resources Power,HKG:0836,13.84,12345
+Bank of China,HKG:3988,3.825,12345
+Sitoy Group,HKG:1023
 iShares India,HKG:2836
 Evergrande,HKG:3333
 Ping An,HKG:2318
 ```
 
-## Downloading manually
+## Downloading and building manually
 
 ```
 $ git clone git@github.com:aranair/rtscli.git
