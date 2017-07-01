@@ -27,10 +27,10 @@ pip install rtscli
 
 ## Running it
 
-- Add tickers.txt in the format below
+- `cp tickers.txt.sample tickers.txt`
 - run `rtscli`
 
-## Sample Tickers File
+## Tickers.txt Sample
 
 Format: Name, Ticker(Google format), cost price, shares held
 
