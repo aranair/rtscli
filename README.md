@@ -8,7 +8,7 @@ rtscli - Realtime Stock Ticker CLI
 
 ## Screenshot
 
-![Demo](https://github.com/aranair/rtscli/blob/master/demo.png?raw=true "Demo")
+![Demo](https://github.com/aranair/rtscli/blob/master/rtscli-demo.png?raw=true "Demo")
 
 ## Dependencies
 
