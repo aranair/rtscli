@@ -66,7 +66,12 @@ def calculate_gain(price_in, current_price, shares):
 
 def get_update():
     ticker_syms = [t[1] for t in tickers]
-    results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
+    results = urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:]
+
+    if not results:
+        return
+
+    results = loads(results)
 
     updates = [
         ('headers', u'Stock \t '.expandtabs(25)),
