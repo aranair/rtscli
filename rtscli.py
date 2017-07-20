@@ -68,7 +68,7 @@ def get_update():
     ticker_syms = [t[1] for t in tickers]
     try:
         results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
-    except urllib2.HTTPError:
+    except HTTPError:
         return
 
     updates = [
