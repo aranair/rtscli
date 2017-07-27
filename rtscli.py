@@ -68,8 +68,11 @@ def get_update():
     ticker_syms = [t[1] for t in tickers]
     try:
         results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
-    except HTTPError:
+    except:
         return
+
+    if not results:
+        results = []
 
     updates = [
         ('headers', u'Stock \t '.expandtabs(25)),
