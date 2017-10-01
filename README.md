@@ -5,6 +5,7 @@ rtscli - Realtime Stock Ticker CLI
 
 - A stock ticker that runs in terminal
 - It automatically grabs info from Google Finance Api every 10 seconds.
+- Blog post about this: https://aranair.github.io/posts/2017/06/28/building-a-python-cli-stock-ticker-with-urwid/
 
 ## Screenshot
 
