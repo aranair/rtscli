@@ -1,5 +1,5 @@
 import urwid
-from urllib2 import urlopen
+from urllib import urlopen
 from HTMLParser import HTMLParser
 from simplejson import loads
 import thread, logging
