@@ -1,4 +1,5 @@
 tickers.txt
+alphavantage-creds.txt
 
 # Compiled python modules.
 *.pyc

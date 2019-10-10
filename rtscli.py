@@ -1,5 +1,13 @@
 import urwid
-from urllib import urlopen
+
+try:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+except ImportError:
+    # Fall back to Python 2's urllib2
+    from urllib2 import urlopen
+
+import json
 from HTMLParser import HTMLParser
 from simplejson import loads
 import thread, logging
@@ -14,6 +22,9 @@ def parse_lines(lines):
 # Read files and get symbols
 with open("tickers.txt") as file:
     tickers = list(parse_lines(file.readlines()))
+
+with open("alphavantage-creds.txt") as file:
+    apikey = list(parse_lines(file.readlines()))[0]
 
 # Set up color scheme
 palette = [
@@ -65,14 +76,17 @@ def calculate_gain(price_in, current_price, shares):
     return gain_per_share * int(shares), gain_percent
 
 def get_update():
-    ticker_syms = [t[1] for t in tickers]
-    try:
-        results = loads(urlopen('https://www.google.com/finance/info?q=' + ",".join(ticker_syms)).read()[3:])
-    except:
-        return
+    results = []
 
-    if not results:
-        results = []
+    try:
+        for t in tickers:
+            ticker_sym = t[1]
+            url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey={}".format(ticker_sym, apikey)
+            res = json.loads(urlopen(url).read())
+            results.append(res["Global Quote"])
+    except Exception as err:
+        print err
+        return
 
     updates = [
         ('headers', u'Stock \t '.expandtabs(25)),
@@ -84,16 +98,16 @@ def get_update():
     total_portfolio_change = 0.0
 
     for i, r in enumerate(results):
-        change = float(r['c'])
-        percent_change = float(r['cp'])
+        change = float(r['09. change'])
+        percent_change = r['10. change percent']
 
         append_text(updates, '{} \t '.format(tickers[i][0]), tabsize=25)
-        append_text(updates, '{} \t '.format(r['l_cur']), tabsize=15)
+        append_text(updates, '{} \t '.format(r['05. price']), tabsize=15)
         append_text(
             updates,
             '{} \t {}% \t'.format(
                 pos_neg_change(change),
-                pos_neg_change(percent_change)),
+                percent_change),
             tabsize=13,
             color=get_color(change))
 
@@ -101,7 +115,7 @@ def get_update():
         if len(tickers[i]) > 2:
             gain, gain_percent = calculate_gain(
                 price_in = tickers[i][2],
-                current_price = r['l_fix'],
+                current_price = r['05. price'],
                 shares = tickers[i][3])
 
             total_portfolio_change += gain
@@ -127,10 +141,11 @@ def handle_input(key):
 def refresh(_loop, _data):
     main_loop.draw_screen()
     quote_box.base_widget.set_text(get_update())
-    main_loop.set_alarm_in(10, refresh)
+    main_loop.set_alarm_in(60, refresh)
 
 main_loop = urwid.MainLoop(layout, palette, unhandled_input=handle_input)
 
 def cli():
     main_loop.set_alarm_in(0, refresh)
     main_loop.run()
+cli()
