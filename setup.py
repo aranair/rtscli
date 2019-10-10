@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='rtscli',
-    version='0.3.1',
+    version='0.3.2',
     description='A realtime stocks ticker that runs in CLI',
     url='http://github.com/aranair/rtscli',
     author='Boa Ho Man',
