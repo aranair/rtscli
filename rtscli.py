@@ -7,7 +7,6 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 
-import json
 from HTMLParser import HTMLParser
 from simplejson import loads
 import thread, logging
@@ -82,7 +81,7 @@ def get_update():
         for t in tickers:
             ticker_sym = t[1]
             url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}&apikey={}".format(ticker_sym, apikey)
-            res = json.loads(urlopen(url).read())
+            res = loads(urlopen(url).read())
             results.append(res["Global Quote"])
     except Exception as err:
         print err
