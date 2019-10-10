@@ -1,10 +1,7 @@
-## NOTE
+**NOTE** 
+This has been changed to use https://alphavantage.co because Google Finance does not seem to work reliably anymore (IPs get blocked and it just plain out doesn't work)
 
-This has been changed to use alphavantage.co because Google Finance does not seem to work reliably anymore (IPs get blocked and it just plain out doesn't work)
-
-You can get a free API key with a limited number of queries per second and so this has been tweaked to just refresh every 60s now.
-
-Then just put the api-key into `alphavantage-creds.txt` to get it to work
+You can get a free API key with a limited number of queries per second and so this has been tweaked to just refresh every 60s now. Put the api-key into `alphavantage-creds.txt` and it should work as usual.
 
 ## rtscli - Realtime Stock Ticker CLI
 <a target="_blank" href="https://opensource.org/licenses/MIT" title="License: MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg"></a> <a target="_blank" href="http://makeapullrequest.com" title="PRs Welcome"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"></a>
@@ -12,6 +9,11 @@ Then just put the api-key into `alphavantage-creds.txt` to get it to work
 - A stock ticker that runs in console
 - It grabs info from Google Finance Api every 10 seconds, or if you press R
 - It's pretty simple but if you wanna read through a blog post instead: https://aranair.github.io/posts/2017/06/28/building-a-python-cli-stock-ticker-with-urwid/
+
+**NOTE** 
+This has been changed to use https://alphavantage.co because Google Finance does not seem to work reliably anymore (IPs get blocked and it just plain out doesn't work)
+
+You can get a free API key with a limited number of queries per second and so this has been tweaked to just refresh every 60s now. Put the api-key into `alphavantage-creds.txt` and it should work as usual.
 
 ## Screenshot
 
