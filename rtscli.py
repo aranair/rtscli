@@ -1,15 +1,17 @@
 import urwid
-
 try:
     # For Python 3.0 and later
     from urllib.request import urlopen
 except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
-
-from HTMLParser import HTMLParser
+try:
+    # For Python3.0 and later
+    from html.parser import HTMLParser
+except ImportError:
+    # Fall back to Python 2's HTMLparser
+    from HTMLparser import HTMLparser
 from simplejson import loads
-import thread, logging
 from time import sleep
 
 
@@ -19,11 +21,14 @@ def parse_lines(lines):
         yield ticker
 
 # Read files and get symbols
+
 with open("tickers.txt") as file:
     tickers = list(parse_lines(file.readlines()))
 
+
 with open("alphavantage-creds.txt") as file:
     apikey = list(parse_lines(file.readlines()))[0]
+
 
 # Set up color scheme
 palette = [
@@ -84,7 +89,7 @@ def get_update():
             res = loads(urlopen(url).read())
             results.append(res["Global Quote"])
     except Exception as err:
-        print err
+        print(err)
         return
 
     updates = [
