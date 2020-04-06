@@ -6,7 +6,7 @@
 - It's pretty simple but if you wanna read through a blog post instead: https://aranair.github.io/posts/2017/06/28/building-a-python-cli-stock-ticker-with-urwid/
 
 **NOTE!!**
-This has been changed to use https://alphavantage.co because Google Finance does not seem to work reliably anymore (IPs get blocked and it just plain out doesn't work)
+This has been changed to use https://www.alphavantage.co because Google Finance does not seem to work reliably anymore (IPs get blocked and it just plain out doesn't work)
 
 You can get a free API key with a limited number of queries per second and so this has been tweaked to just refresh every 60s now. Put the api-key into `alphavantage-creds.txt` and it should work as usual.
 
